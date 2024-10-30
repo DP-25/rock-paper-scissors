@@ -1,7 +1,10 @@
-console.log("Hello World!");
-
 let humanScore = 0;
 let computerScore = 0;
+const buttons = document.querySelectorAll('button');
+const div = document.querySelector('#result');
+const results = document.querySelector("#round");
+const score = document.querySelector("#final");
+const reminder = document.querySelector("#rem");
 
 function getComputerChoice(){
     const randNum = Math.floor(Math.random() * 3);
@@ -17,7 +20,7 @@ function getComputerChoice(){
     }
 }
 
-function getHumanChoice(){
+/*function getHumanChoice(){
     let choice = prompt("Rock, Paper, or Scissors");
     choice = choice.toLowerCase();
     
@@ -26,10 +29,15 @@ function getHumanChoice(){
     }
 
     return choice;
-}
+}*/
 
-function playRound(humanChoice, computerChoice){
+function playRound(humanChoice){
+    if(reminder.textContent !== ''){
+        reminder.textContent = '';
+    }
     let result;
+    humanChoice.toLowerCase();
+    let computerChoice = getComputerChoice();
     switch(humanChoice){
         case 'rock':
             if(computerChoice === 'rock'){
@@ -68,36 +76,40 @@ function playRound(humanChoice, computerChoice){
             result = "There was something wrong, try again!";
     }
 
-    console.log(result);
+    results.textContent = "You chose: " + humanChoice + ". " + result;
     return result;
 
 }
 
-function playGame(){
-    let rounds = 5;
-    console.log("Welcome to the RPS ROYAL RUMBLE!");
+function playGame(human){
 
-    for(let curr = 0; curr < rounds; curr++){
-        const hum = getHumanChoice();
-        const bot = getComputerChoice();
-        let temp = playRound(hum, bot);
-        if(temp.includes("You won the round")){
-            humanScore++;
-        }
-        else if(temp.includes("You lose")){
-            computerScore++;
-        }
-        else{
-            console.log("Tie! Score is the same");
-        }
-
-        console.log("The current score is: Human: " + humanScore + " Coomputer: " + computerScore)
-
+    let temp = playRound(human);
+    if(temp.includes("You won the round")){
+        humanScore++;
+    }
+    else if(temp.includes("You lose")){
+        computerScore++;
+    }
+    else{
+        console.log("Tie! Score is the same");
     }
 
-    console.log("THATS ALL FOLKS! Final Score is: Human: " + humanScore + " Bot: " + computerScore);
-    humanScore = 0;
-    computerScore = 0;
+    score.textContent = "The current score is: Human: " + humanScore + " Computer: " + computerScore;
+
+    if(humanScore === 5 || computerScore === 5){
+        score.textContent = "THATS ALL FOLKS! Final Score is: Human: " + humanScore + " Bot: " + computerScore;
+        score.style.cssText = "font-size: 20px; font-weight:bold;";
+        reminder.textContent = "Choose an option to start again!";
+        reminder.style.cssText = "font-size: 18px; font-weight:bold;";
+        humanScore = 0;
+        computerScore = 0;
+    }
+
 }
 
-playGame();
+buttons.forEach((button) => {
+    button.addEventListener('click', () => {
+        console.log(button.id);
+        playGame(button.id);
+    });
+});
